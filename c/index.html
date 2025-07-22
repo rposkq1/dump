@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>factorial calculator</title>
+<style>
+body{background-color: #2b2a33; color: #ccc; font-family: terminus}
+pre{height: 2em}
+#container{border: 1px solid #ccc; padding: 10px; overflow-wrap: break-word</style>
+<script>
+  function createIncArray(i) {
+    const result = [];
+    for (let num = 0; num < i; num++) {
+      result.push(num);
+    }
+  return result;
+  }
+
+  function display(id, data){
+  document.getElementById(id).innerText = data;
+  }
+
+  function get(id){
+    return document.getElementById(id).value;
+  }
+  function factorial(n) {
+  if (n === 0 || n === 1) {
+      return 1;
+  }
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+      result *= i;
+  }
+  return result;
+  }
+
+function ssplit(str, coma) {
+  let arr
+  switch (coma){
+  case false:
+    arr = str.split('');
+  break;  
+  case true:
+    arr = str.split(',');
+  break;
+  }
+  arr = arr.map(Number); 
+  return arr
+}
+
+  function decToFactoradic(number) {
+    if (number < 0) {
+      throw new Error("Number must be non-negative");
+    }
+  let i = 0;
+  let factoradic = [];
+
+  // Find the largest factorial less than or equal to the number
+  while (number >= factorial(i)) {
+      i++;
+  }
+  i--; // Decrement to get the largest valid factorial index
+
+  // Convert to factoradic
+  while (i >= 0) {
+      let fact = factorial(i);
+      let coefficient = Math.floor(number / fact); // Get the coefficient
+      factoradic.push(coefficient); // Store the coefficient
+      number -= coefficient * fact; // Reduce the number
+      i--; // Move to the next lower factorial
+  }
+  return factoradic;
+  }
+
+  function decimal2cantor(x) {
+  let n = 0
+  let a = []
+  while (x != 0) {
+    a[n] = x % (n+1)
+    x = (x-a[n])/(n+1)
+    n++
+  }
+  return a.reverse()
+  }
+
+  function factoradicToDec(factoradic) {
+  let number = 0;
+  let o = 0
+  for (let i = factoradic.length-1; i >= 0; i--) {
+    number += factoradic[o] * factorial(i); 
+    o++
+  }
+  return number;
+  }
+
+// function cantor2decimal(a) {
+// let n = 1;
+// let x = 0;
+// for (let i = a.length - 1; i >= n; i--) {
+//    x = x * (i + 1) + a[i];
+//    //x += a[i]
+//    //x *= i
+//  }
+//  return x+1;
+//  }
+
+  function factoradicToPermutation(arr){
+  let n = arr.length
+  let permSet = createIncArray(n)
+  let result = []
+  let o = 0
+
+  for(let i = 0; i < n; i++){
+    o = arr[i]
+    result.push(permSet[o])
+    permSet.splice(o, 1);
+  }
+  return result
+  }
+
+  function permutationToFactoradic(arr){
+  let n = arr.length
+  let permSet = createIncArray(n)
+  let result = []
+
+  for(let i = 0; i < n; i++){
+    let current = arr[i];
+    let index = permSet.indexOf(current); // Find the index of the current element
+    result.push(index); // Push the index to the result
+    permSet.splice(index, 1); // Remove the current element from permSet
+  }
+  return result
+  }
+
+  function main(){
+  let number = get("num");
+//  if(isNaN(number)){
+//    return
+//  }
+  let coma = document.getElementById("coma").checked
+  let result
+  switch(get("select")){
+    case "decToFact":
+      result = decToFactoradic(number)
+    break;
+    case "decToCantor":
+      result = decimal2cantor(number)
+    break;
+    case "factToDec":
+      result = factoradicToDec(ssplit(number, coma))
+    break;
+    case "factToPerm":
+      result = factoradicToPermutation(ssplit(number, coma))
+    break;
+    case "permToFact":
+      result = permutationToFactoradic(ssplit(number, coma))
+    break;
+    case "hexToDec":
+      result = parseInt(number)
+      result = parseInt(result, 16)
+    break;
+    case "decToHex":
+      result = parseInt(number)
+      result = result.toString(16)
+    break;
+    case "binaryToDec":
+      result = parseInt(number)
+      result = parseInt(result, 2)
+    break;
+    case "decToBinary":
+      result = parseInt(number)
+      result = result.toString(2)
+    break;
+  }
+  
+  display("result", " "+result)
+  }
+</script>
+</head>
+<body>
+<div id="container">
+  <h1>Factorial Calculator</h1>
+  <input id="num" placeholder="number"></input>
+  <button onclick="main()">calculate</button>
+   <div>
+   <select id="select">
+    <option value="decToFact" checked> Decimal to Factoradic</option><br>
+    <option value="decToCantor"> Decimal to Cantor</option><br>
+    <option value="factToDec"> Factoradic to Decimal</option><br>
+    <option value="factToPerm"> Factoradic to Permutation</option><br>
+    <option value="permToFact"> Permutation to Factoradic</option><br>
+    <option value="hexToDec"> Hex to Decimal</option><br>
+    <option value="decToHex"> Decimal to Hex</option><br>
+    <option value="binaryToDec"> Binary to Decimal</option><br>
+    <option value="decToBinary"> Decimal to Binary</option><br>
+   </select>
+  <label><input id="coma" type="checkbox">coma separated(1) or not separated(0) arrays </label>
+  </div>
+  <div id="result"></div>
+</div>
+</body>
+</html>
+
